@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const authorSchema = new mongoose.schema({
+const authorSchema = new mongoose.Schema({
     fname:{
         type:String,
         require: true
@@ -11,11 +11,12 @@ const authorSchema = new mongoose.schema({
     }, 
     title: {
         type:String,
-        enum:[Mr, Mrs, Miss],
+        enum:['Mr', 'Mrs', 'Miss'],
         require:true
     },
     email: {
         type:String,
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/],
         require:true,
         unique:true
     },
@@ -24,6 +25,6 @@ const authorSchema = new mongoose.schema({
          required: true 
     }    
 
-}, {timestamp:true})
+}, {timestamps:true})
 
 module.exports = mongoose.model('Author', authorSchema)
