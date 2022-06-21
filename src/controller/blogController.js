@@ -1,3 +1,4 @@
+const { get } = require("mongoose")
 const authorModel=require("../model/authorModel")
 const blogModel=require('../Model/blogModel')
 
@@ -17,13 +18,10 @@ try{
 
 const getBlogs = async function( req, res){
     try {
-        let getBlogsData = await blogModel.find({isDeleted:false,isPublished:true})
+        let data= req.query
+        let getBlogsData = await blogModel.find({$or:[{isDeleted:false,isPublished:true},{_id:data.id},{category:data.category},{tags:data.tags}]})
         if(getBlogsData.length>0)  res.status(200).send({status:true, data: getBlogsData})
-        // Filter blogs list by applying filters. Query param can have any combination of below filters.
-        // By author Id
-        // By category
-        // List of blogs that have a specific tag
-        // List of blogs that have a specific subcategory example of a query url: blogs?filtername=filtervalue&f2=fv2
+    
         else res.status(404).send("data not find")
        
     } catch (err) {
@@ -31,13 +29,15 @@ const getBlogs = async function( req, res){
     } 
 }
 const updateBlogs = async function( req, res){
-
+    try{
     let blogId = req.params.blogId
-    console.log(blogId)
     let data =req.body
     let updatedData= await blogModel.findByIdAndUpdate({_id:blogId},{ $set:{"title":data.title,"body":data.body, }} ,
     {$push:{"tags":data.tags,"subcategory":data.subcategory},})
     res.send({msg: updatedData})
+   } catch (err){
+    res.status(500).send({"err":err})
+   }
 }
 
 
