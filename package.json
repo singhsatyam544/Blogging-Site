@@ -1,0 +1,25 @@
+{
+  "name": "radon",
+  "version": "1.0.0",
+  "description": "Blogging Site Mini Project Requirement",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sabihak89/radon.git"
+  },
+  "author": "Satyam_Ajij_Abhishek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sabihak89/radon/issues"
+  },
+  "homepage": "https://github.com/sabihak89/radon#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "mongoose": "^6.4.0",
+    "nodemon": "^2.0.16"
+  }
+}
