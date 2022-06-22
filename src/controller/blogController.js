@@ -1,6 +1,7 @@
-const { get } = require("mongoose");
+// const { get } = require("mongoose");
 const authorModel = require("../model/authorModel");
 const blogModel = require("../Model/blogModel");
+const mongoose = require("mongoose")
 
 const createBlog = async function (req, res) {
   try {
@@ -18,21 +19,18 @@ const createBlog = async function (req, res) {
 };
 
 const getBlogs = async function (req, res) {
-  try {
-    let getBlogsData = await blogModel.find({
-      $and: [{ isDeleted: false, isPublished: true }],
-    });
-    if (getBlogsData.length > 0) {
-      let tags = req.query.tags;
-      let category = req.query.category;
-      let authorId = req.query.authorId;
-      let updatedData = await blogModel.find({
-        $or: [{ tags }, { category }, { authorId }],
-      });
-      res.send({ msg: updatedData });
+    try {
+        let data=req.query
+        let query={isDeleted:false, 
+        isPublished:true}
+        if (data.authorId) query.authorId = data.authorId;   
+        if (data.tags) query.tags = { $in: data.tags };
+        if (data.category) query.category = data.category ;
+        let getdata = await blogModel.find(query);
+        if (Object.keys(getdata).length>0) { res.status(200).send({ status: true, msg: getdata});
     } else {
-      res.status(404).send("data not find");
-    }
+            res.status(404).send("data not found");
+          }
   } catch (err) {
     res.status(500).send({ err: err });
   }
@@ -63,28 +61,51 @@ const updateBlogs = async function (req, res) {
   }
 };
 
-const deleteBlogs = async function (req, res) {
-  try {
-    let data = req.params;
-    let varify = await blogModel.findById({ _id: data.blogId });
-    if (!varify) {
-      res
-        .status(404)
-        .send({ status: false, msg: "Id is not found in DataBase" });
-    }
-    let deletedData = await blogModel.findByIdAndUpdate(
-      { _id: data.blogId, isDeleted: false },
-      { $set: { isDeleted: true } }
-    );
-
-    res.status(200).send();
-    if (!deletedData) res.status(404).send({ status: false, msg: "" });
-  } catch (err) {
-    res.status(500).send({ err: err });
+const varify=function(ObjectId){
+    return mongoose.Types.ObjectId.isValid(ObjectId)
   }
-};
+  
+  const deleteById = async function (req, res) {
+    try {
+      let data = req.params.blogId;
+      if (!data) res.status(400).send("please provide blogId");
+  
+      if(!varify(data)){return res.status(404).send("Id is not valid")}
+  
+    let vari = await blogModel.findById({ _id:data} );
+    
+      if (Object.keys(vari).length==0){res.send({ status: false, msg: "Id is not found in DataBase" });}
+      if (vari.isDeleted == false) {
+       await blogModel.findByIdAndUpdate({ _id:data},{ $set: { isDeleted: true,deletedAt: Date.now() } }
+        );
+        res.status(200).send();
+      }else{res.status(404).send({ status: false, msg: "no data found" })}
+    } catch (err) {
+      res.status(500).send({ err: err });
+    }
+  };
+// const deleteById = async function (req, res) {
+//   try {
+//     let data = req.params;
+    
+    
+//     let query ={isDeleted:false}
+//     if(data.authorId) query.authorId = data.authorId
+//     if(data.blogId) query.blogId = data.blogId
 
-const deleteByParams = async function (req, res) {
+  
+//     let verify = await blogModel.findById({ _id: data.blogId });
+//     if (!verify(data.blogId)) { return res.status(404).send({ status: false, msg: "Id is not found in DataBase" })}
+    
+    
+//     let deletedData = await blogModel.updateMany(query,{$set: { isDeleted: true, deletedAt: new Date }})
+//     res.status(200).send();
+//   } catch (err) {
+//     res.status(500).send({ err: err });
+//   }
+// };
+
+const deleteByQuery = async function (req, res) {
   try {
     let data = req.query;
     if (Object.keys(data).length == 0) {
@@ -112,5 +133,5 @@ const deleteByParams = async function (req, res) {
 module.exports.createBlog = createBlog;
 module.exports.getBlogs = getBlogs;
 module.exports.updateBlogs = updateBlogs;
-module.exports.deleteBlogs = deleteBlogs;
-module.exports.deleteByParams = deleteByParams;
+module.exports.deleteById = deleteById;
+module.exports.deleteByQuery = deleteByQuery;
