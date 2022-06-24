@@ -33,6 +33,7 @@ const authorise = async function (req, res, next) {
 const delByQeury = async function( req, res,next){
   try{
   let data = req.query 
+  if(!data) return res.send({status:false, msg:"No data find"})
   let query={isDeleted:false}
   if(data.tags) query.tags = {$in: data.tags}
   if(data.category) query.category = data.category
@@ -40,8 +41,7 @@ const delByQeury = async function( req, res,next){
   if (data.subcategory) query.subcategory = { $in: data.subcategory }
   let allData = await blogModel.findOne(query)
   console.log(allData)
-  if(Object.keys(allData).length>0){
-    decodedToken=req["decodedToken"]
+  if(Object.keys(allData).length>0){ decodedToken=req["decodedToken"]
     let authorIdFromQuery= allData.authorId
     let authorIdFromToken = decodedToken.authorId
     if(authorIdFromQuery != authorIdFromToken){

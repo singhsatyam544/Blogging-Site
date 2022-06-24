@@ -11,10 +11,10 @@ const createBlog = async function (req, res) {
   try {
     let authorId = req.body.authorId;
     let blogData = req.body;
-    if(!blogData.title) return res.status(404).send({msg:"Please write the title in body"})
-    if(!blogData.body) return res.status(404).send({msg:"Please write the body in body section"})
-    if(!authorId) return res.status(404).send({msg:"Please write the authorId in body"})
-    if(!blogData.category) return res.status(404).send({msg:"Please write the blog category in body"})
+    if(!blogData.title) return res.status(404).send({msg:"Add the title in body"})
+    if(!blogData.body) return res.status(404).send({msg:"Add the body in body section"})
+    if(!authorId) return res.status(404).send({msg:"Add the authorId in body"})
+    if(!blogData.category) return res.status(404).send({msg:"Add the blog category in body"})
     if(!varify(authorId)){return res.status(404).send("authorId is not valid")}
     let authorIdfind = await authorModel.findById(authorId);
     if (!authorIdfind) res.status(404).send({ msg: "author is not exist" });
