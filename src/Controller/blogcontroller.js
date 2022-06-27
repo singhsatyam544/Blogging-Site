@@ -10,17 +10,17 @@ const createBlog = async function (req, res) {
   try {
     let authorId = req.body.authorId;
     let blogData = req.body;
-    if(!blogData.title){return res.status(400).send({ msg: "title is required" });}
-    if(!blogData.body){return res.status(400).send({ msg: "body is required" });}
-    if(!authorId){return res.status(400).send({ msg: "authorId is required" });}
-    if(!blogData.category){return res.status(400).send({ msg: "category is required" });}
-    if(!varify(authorId)){return res.status(404).send("authorId is not valid")}
+    if(!blogData.title){return res.status(400).send({  status: false, msg: "title is required" });}
+    if(!blogData.body){return res.status(400).send({ status: false, msg: "body is required" });}
+    if(!authorId){return res.status(400).send({ status: false, msg: "authorId is required" });}
+    if(!blogData.category){return res.status(400).send({ status: false, msg: "category is required" });}
+    if(!varify(authorId)){return res.status(404).send({ status: false, msg: "authorId is not valid" })}
     let authorIdfind = await authorModel.findById(authorId);
     if (!authorIdfind) {
-      return res.status(404).send({ msg: "author is not exist" });
+      return res.status(404).send({status: false, msg: "author is not exist" });
     }
     let blogcreate = await blogModel.create(blogData);
-    res.status(201).send({ msg: blogcreate });
+    res.status(201).send({status: true,  msg: blogcreate });
   } catch (err) {
     res.status(500).send({ err: err });
   }
@@ -29,16 +29,16 @@ const createBlog = async function (req, res) {
 const getBlog =async function (req, res) {
   try {
     let data = req.query;
-    if(!data){return res.status(400).send("required some query ")}
+    if(!data){return res.status(400).send({status: false,msg: "required some query "})}
     let query = { isDeleted: false, isPublished: true };
-    if (data.authorId){ if(!varify(data.authorId)){return res.status(404).send("authorId is not valid")}else{return query.authorId = data.authorId;}}
+    if (data.authorId){ if(!varify(data.authorId)){return res.status(404).send({status: false, msg:"authorId is not valid"})}else{return query.authorId = data.authorId;}}
     if (data.tags) query.tags = { $in: data.tags };
     if (data.category) query.category = data.category;
     let getdata =await blogModel.find(query);
     if (Object.keys(getdata).length > 0) {
       res.status(200).send({ status: true, msg: getdata });
     } else {
-      res.status(404).send("data not found");
+      res.status(404).send({status: false, msg:"data not found"});
     }
   } catch (err) {
     res.status(500).send({ err: err });
@@ -50,7 +50,7 @@ const updateBlog = async function (req, res) {
   try {
     let blogId = req.params.blogId;
     let data = req.body;
-    if(!data){return res.status(400).send("Please enter required data");}
+    if(!data){return res.status(400).send({status: false, msg:"Please enter required data"});}
     let query = { isPublished: true, publishedAt: new Date };
     if (data.title) query.title = data.title;
     if (data.body) query.body = data.body;
@@ -70,9 +70,9 @@ const updateBlog = async function (req, res) {
       );
       if (Object.keys(arrayupdate).length > 0) {
         res.status(200).send({ status: true, msg: arrayupdate });
-      }else{res.status(404).send("data not found");}
+      }else{res.status(404).send({status: false, msg:"data not found"});}
     } else {
-      res.status(404).send("data not found");
+      res.status(404).send({status: false, msg:"data not found"});
     }
   } catch (err) {
     res.status(500).send({ err: err.massage });
@@ -85,7 +85,7 @@ const deleteById = async function (req, res) {
   try {
     let data = req.params.blogId;
 
-    if(!varify(data)){return res.status(400).send("Id is not valid")}
+    if(!varify(data)){return res.status(400).send({status: false, msg:"Id is not valid"})}
     let vari = await blogModel.findById(data);
     if (!vari){return res.status(404).send({ status: false, msg: "Data not found" });}
     if (vari.isDeleted == false) {
