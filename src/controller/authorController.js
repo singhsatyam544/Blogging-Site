@@ -25,7 +25,7 @@ try{
     }
 
     let usedEmail = await authorModel.find({email:authordata.email})
-    if(usedEmail){
+    if(Object.keys(usedEmail).length>0){
          return res.status(409).send({err:"this email id is already used."})
          // 409:The request could not be completed due to a conflict with the current state of the resource. This code is only allowed in situations where it is expected
       }else { 

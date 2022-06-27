@@ -52,7 +52,7 @@ const updateBlogs = async function (req, res) {
     if(!blogId) return res.status(404).send({status:false, msg:"BlogId is not found"})
     let data = req.body;
     if(!data) return res.status(404).send({status:false,msg:"No data is  here"})
-    let updatedData = await blogModel.findByIdAndUpdate({ _id: blogId },{$set: {title: data.title,body: data.body, isPublished: true, publishedAt: new Date(), },});
+    let updatedData = await blogModel.findByIdAndUpdate({ _id: blogId },{$set: {title: data.title,body: data.body, isPublished: true, publishedAt: new Date(), }});
     let arrayupdate = await blogModel.findByIdAndUpdate({ _id: blogId },{ $push: { tags: data.tags, subcategory:subcategory } },{ new: true });
     res.send({ msg: arrayupdate });
   } catch (err) {
