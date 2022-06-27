@@ -1,4 +1,4 @@
-// const { get } = require("mongoose");
+const { get } = require("mongoose");
 const authorModel = require("../model/authorModel");
 const blogModel = require("../Model/blogModel");
 const mongoose = require("mongoose")
@@ -49,11 +49,13 @@ const getBlogs = async function (req, res) {
 const updateBlogs = async function (req, res) {
   try {
     let blogId = req.params.blogId;
+    
     if(!blogId) return res.status(404).send({status:false, msg:"BlogId is not found"})
     let data = req.body;
+   
     if(!data) return res.status(404).send({status:false,msg:"No data is  here"})
     let updatedData = await blogModel.findByIdAndUpdate({ _id: blogId },{$set: {title: data.title,body: data.body, isPublished: true, publishedAt: new Date(), }});
-    let arrayupdate = await blogModel.findByIdAndUpdate({ _id: blogId },{ $push: { tags: data.tags, subcategory:subcategory } },{ new: true });
+    let arrayupdate = await blogModel.findByIdAndUpdate({ _id: blogId },{ $push: { tags: data.tags, subcategory:data.subcategory } },{ new: true });
     res.send({ msg: arrayupdate });
   } catch (err) {
     res.status(500).send({ err: err });
