@@ -2,6 +2,19 @@ const authorModel=require("../model/authorModel")
 const jwt = require("jsonwebtoken");
 
 
+
+titver=function (tit){
+  if(tit==="Mr"){
+    return "Mr"
+  }else if(tit=="Miss"){
+    return "Miss"
+  }else if(tit=="Mrs"){
+    return "Mrs"
+  }else{
+    return null
+  }
+}
+
 const createAuthor=async function (req,res){
 try{
 
@@ -16,12 +29,14 @@ try{
        return res.status(400).send({ status: false, msg: "please fill title" })
     }
   
-    if(authordata.title!=["Mr"||"Mrs"||"Miss"]){
+
+    if(!titver(authordata.title)){
       return res.status(400).send({ status: false, msg: 'please use only these titles "Mr","Mrs","Miss"' })
     }
     if(!authordata.email){
        return res.status(400).send({ status: false, msg: "please fill email" })
     }
+    
     if(!authordata.password){
         res.status(400).send({ status: false, msg: "please fill password"})
     }
