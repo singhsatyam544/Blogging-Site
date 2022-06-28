@@ -1,4 +1,3 @@
-const env=require('dotenv').config()
 const express=require('express')
 const bodyParser=require('body-parser')
 const route=require('./router/route')
@@ -7,7 +6,7 @@ const app=express()
 
 app.use(bodyParser.json())
 
-mongoose.connect("mongodb+srv://betechnoid:Abhishek8285366507@cluster0.ctbkbk3.mongodb.net/project1?retryWrites=true&w=majority",{
+mongoose.connect("mongodb+srv://singhsatyam544:test@cluster0.s2bskcq.mongodb.net/project-1",{
     useNewUrlParser:true
 })
 .then(()=>console.log('Mongo is connected'))

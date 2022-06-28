@@ -4,9 +4,7 @@ const authorController = require("../controller/authorController");
 const blogController = require("../Controller/blogcontroller");
 const authMiddleware = require("../middleware/auth");
 
-router.get('/test' ,function (req, res) {
-    console.log 
-})
+
 
 router.post("/authors", authorController.createAuthor);
 router.post("/login", authorController.loginAuthor);
@@ -25,9 +23,7 @@ router.delete(
   blogController.deleteById
 );
 router.delete(
-  "/blogs",
-  authMiddleware.authenticate,authMiddleware.delByQue,  
-  blogController.deleteByQuery
+  "/blogs",authMiddleware.authenticate,authMiddleware.delByQue,blogController.deleteByQuery
 );
 
 module.exports = router;
