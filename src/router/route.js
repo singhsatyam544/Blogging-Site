@@ -5,9 +5,6 @@ const blogController = require('../controller/blogController')
 const auth = require("../middleware/auth")
 
 
-router.get("/test-me", function (req, res) {
-    res.send("My first ever api!")
-})
 
 router.post('/authors',authorController.createAuthor)
 router.post('/blogs', auth.authenticate, blogController.createBlog)
